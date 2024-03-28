@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart' as http;
-import 'package:httprequest/Models/Movie.dart'; 
+import 'package:httprequest/Models/Movie.dart';
 
 class httpService {
   final String apiKey = 'api key';
@@ -16,7 +16,8 @@ class httpService {
       print("Success");
       final jsonResponse = json.decode(result.body);
       final List<dynamic> moviesMap = jsonResponse['data'];
-      List<Movie> movies = moviesMap.map((json) => Movie.fromJson(json)).toList();
+      List<Movie> movies =
+          moviesMap.map((json) => Movie.fromJson(json)).toList();
       return movies;
     } else {
       print("Fail");

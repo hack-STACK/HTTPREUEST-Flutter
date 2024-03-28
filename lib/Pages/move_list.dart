@@ -48,14 +48,15 @@ class _movelistState extends State<movelist> {
           : _movies != null
               ? ListView.builder(
                   itemCount: _movies!.length,
-                  itemBuilder: (context, index) {
-                    final movie = _movies![index];
+                  itemBuilder: (context, Index) {
+                    final movie = _movies![Index];
                     return ListTile(
-                      leading: Image.network(
-                        'https://movie.tukanginyuk.com/${movie.posterPath}', // Provide the URL of the movie poster image
-                        width: 20, // Adjust width as needed
-                        height: 20, // Adjust height as needed
-                        fit: BoxFit.cover,
+                      leading: Image(
+                        image: NetworkImage(
+                            '${movie.posterPath}'), // Provide the URL of the movie poster image
+                        width: 100, // Adjust width as needed
+                        height: 300, // Adjust height as needed
+                        fit: BoxFit.fill,
                         errorBuilder: (context, error, stackTrace) {
                           print('Error loading image: $error');
                           return Icon(Icons
@@ -63,7 +64,7 @@ class _movelistState extends State<movelist> {
                         },
                       ),
                       title: Text(movie.title),
-                      subtitle: Text('Rating: ${movie.voteAverage}'),
+                      subtitle: Text('Rating: ${movie.voteAverage}'.toString()),
                     );
                   },
                 )
