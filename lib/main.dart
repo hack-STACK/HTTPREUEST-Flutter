@@ -3,6 +3,7 @@ import 'package:httprequest/Pages/move_list.dart';
 
 void main() {
   runApp(const MyApp());
+  WidgetsFlutterBinding.ensureInitialized();
 }
 
 class MyApp extends StatelessWidget {
@@ -11,6 +12,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    WidgetsFlutterBinding.ensureInitialized();
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -30,7 +32,7 @@ class MyHomePage extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    return movelist();
+    return const movelist();
   }
 
  
