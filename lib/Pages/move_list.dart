@@ -1,76 +1,70 @@
 import 'package:flutter/material.dart';
+import 'package:httprequest/Pages/movieDetails.dart';
 import '../services/http_services.dart'; // Adjust the import path as per your project structure
 import '../Models/Movie.dart';
 
-class movelist extends StatefulWidget {
-  const movelist({Key? key}) : super(key: key);
+class MovieList extends StatefulWidget {
+  const MovieList({super.key});
 
   @override
-  State<movelist> createState() => _movelistState();
+  // ignore: library_private_types_in_public_api
+  _MovieListState createState() => _MovieListState();
 }
 
-class _movelistState extends State<movelist> {
-  List<Movie>? _movies;
-  bool _isLoading = true;
-  late httpService _httpService; // Declare httpService instance
+class _MovieListState extends State<MovieList> {
+  int moviesCount = 0;
+  List? movies;
+  httpService? service = httpService();
 
   @override
   void initState() {
     super.initState();
-    _httpService = httpService(); // Initialize httpService instance
-    _fetchMovies();
+    service = httpService();
+    initialize();
   }
 
-  Future<void> _fetchMovies() async {
-    try {
-      final movies =
-          await _httpService.getPopularMovies(); // Use httpService instance
-      setState(() {
-        _movies = movies;
-        _isLoading = false;
-      });
-    } catch (error) {
-      print('Error fetching movies: $error');
-      // Handle error here
-    }
+  Future<void> initialize() async {
+    movies= [];
+    movies = await service!.getPopularMovies() as List<Movie>;
+    setState(() {
+      moviesCount = movies!.length;
+      movies = movies;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Popular Movie"),
-        backgroundColor: Colors.red,
+        title: const Text("Your Movies"),
+        backgroundColor: Colors.purple,
         foregroundColor: Colors.white,
       ),
-      body: _isLoading
-          ? Center(child: CircularProgressIndicator())
-          : _movies != null
-              ? ListView.builder(
-                  itemCount: _movies!.length,
-                  itemBuilder: (context, Index) {
-                    final movie = _movies![Index];
-                    return ListTile(
-                      leading: Image(
-                        image: NetworkImage(
-                            '${movie.posterPath}'), // Provide the URL of the movie poster image
-                        width: 100, // Adjust width as needed
-                        height: 300, // Adjust height as needed
-                        fit: BoxFit.fill,
-                        errorBuilder: (context, error, stackTrace) {
-                          print('Error loading image: $error');
-                          return Icon(Icons
-                              .error); // Display a placeholder or error icon
-                        },
-                      ),
-                      title: Text(movie.title),
-                      subtitle: Text('Rating: ${movie.voteAverage}'.toString()),
-                    );
-                  },
-                )
-              : Center(
-                  child: Text('No movies found'),
-                ),
+      body: ListView.builder(
+        itemCount: moviesCount,
+        itemBuilder: (context, position) {
+          return Card(
+            color: Colors.white,
+            elevation: 2.0,
+            child: ListTile(
+              leading: Image(
+                  image: NetworkImage(movies![position].posterPath ??
+                      "https://m.media-amazon.com/images/M/MV5BNjQwZDIyNjAtZGQxMC00OTUwLWFiOWYtNzg2NDc5Mjc1MDQ5XkEyXkFqcGdeQXVyMTAxNzQ1NzI@._V1_.jpg")),
+              title: Text(movies![position].title),
+              subtitle:
+                  Text('Rating: ${movies![position].voteAverage.toString()}'),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => movieDetail(movies![position]),
+                  ),
+                );
+              },
+            ),
+          );
+        },
+      ),
     );
   }
 }
